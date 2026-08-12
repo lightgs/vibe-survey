@@ -146,11 +146,10 @@ display:flex;align-items:center;justify-content:center}
   </div>
 
   <div class="q">
-    <div class="qh"><span class="qn">Q6</span><span class="req">필수</span></div>
+    <div class="qh"><span class="qn">Q6</span><span class="opt-tag">선택</span></div>
     <div class="qt">이번 강의에서 특히 배우고 싶거나 해결하고 싶은 과제를 한 가지만 구체적으로 적어주세요</div>
     <div class="qd">구체적으로 적어주실수록 강의에 그대로 반영됩니다</div>
     <textarea id="goal" placeholder="예) 설문 원자료를 정제하는 데 매번 3~4일이 걸리는데, 그 과정을 스스로 자동화할 수 있게 되고 싶습니다"></textarea>
-    <div class="err" id="e_goal">한 가지만이라도 적어주세요</div>
   </div>
 
   <button class="submit" id="btn" onclick="submitForm()">제출하기</button>
@@ -263,7 +262,7 @@ function submitForm(){
   chk(state.tools.length===0,"e_tools");
   chk(state.motive.length===0,"e_motive");
   chk(state.trouble.length===0,"e_trouble");
-  chk(goal.length<5,"e_goal");
+  // goal 선택 — 검증 없음
   if(bad){document.getElementById(first).scrollIntoView({behavior:"smooth",block:"center"});return;}
 
   const btn=document.getElementById("btn");
