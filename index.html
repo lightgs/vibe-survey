@@ -82,10 +82,6 @@ display:flex;align-items:center;justify-content:center}
   </div>
 </div>
 
-<div id="adminWarn" class="admin hide">
-  <b>[관리자 확인]</b> 구글 시트 연동 주소가 아직 입력되지 않았습니다. HTML 파일 상단 script의 <b>SCRIPT_URL</b> 값에 Apps Script 웹 앱 URL을 붙여넣은 뒤 배포하세요. 현재 상태로 제출하면 응답이 저장되지 않습니다.
-</div>
-
 <div id="formArea">
 
 <div class="card">
@@ -178,10 +174,9 @@ display:flex;align-items:center;justify-content:center}
 
 <script>
 /* ===================================================================
-   [설정] 아래 SCRIPT_URL 에 Google Apps Script 웹 앱 URL을 붙여넣으세요.
-   설치 방법은 함께 제공된 「구글시트 연동 설치 가이드」 참고.
+   Formspree meajgdyz 연동 완료
    =================================================================== */
-const SCRIPT_URL = "";
+const FORMSPREE_ID = "meajgdyz";
 const DEADLINE = new Date("2026-08-21T23:59:59+09:00");
 /* =================================================================== */
 
@@ -250,7 +245,7 @@ checks("g_motive","motive",MOTIVE,2);
 checks("g_trouble","trouble",TROUBLE,3);
 
 (function(){
-  if(!SCRIPT_URL)document.getElementById("adminWarn").classList.remove("hide");
+  // Formspree 연동 완료
   const p=document.getElementById("ddayPill"),now=new Date();
   const days=Math.ceil((DEADLINE-now)/86400000);
   if(days<0){p.className="pill warn";p.textContent="제출기한 종료 (8/21) · 늦은 응답도 제출 가능";}
@@ -277,21 +272,21 @@ function submitForm(){
   const payload={degree:state.degree,level:state.level,tools:state.tools,
     motive:state.motive,trouble:state.trouble,goal};
 
-  if(!SCRIPT_URL){
-    console.log("[미연동 상태] 제출 데이터:",payload);
-    alert("관리자 설정 미완료: 구글 시트 연동 주소(SCRIPT_URL)가 비어 있어 저장되지 않았습니다.");
-    btn.disabled=false;btn.textContent="제출하기";return;
-  }
-  fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",
-    headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify(payload)})
-  .then(()=>{
-    document.getElementById("formArea").classList.add("hide");
-    document.getElementById("doneArea").classList.remove("hide");
-    window.scrollTo({top:0,behavior:"smooth"});
+  fetch("https://formspree.io/f/" + FORMSPREE_ID, {
+    method: "POST",
+    headers: {"Content-Type": "application/json", "Accept": "application/json"},
+    body: JSON.stringify(payload)
   })
-  .catch(()=>{
-    err("e_all",true);btn.disabled=false;btn.textContent="다시 제출하기";
+  .then(r => r.json())
+  .then(d => {
+    if(d.ok) {
+      document.getElementById("formArea").classList.add("hide");
+      document.getElementById("doneArea").classList.remove("hide");
+      window.scrollTo({top:0,behavior:"smooth"});
+    } else throw new Error();
+  })
+  .catch(() => {
+    err("e_all",true); btn.disabled=false; btn.textContent="다시 제출하기";
   });
 }
 </script>
